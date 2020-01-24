@@ -57,10 +57,11 @@ RUN set -x \
     && rm -rf $SONARQUBE_HOME/bin/*
 
 
-VOLUME ["$SONARQUBE_HOME"]
+VOLUME ["$SONARQUBE_HOME}/data", "${SONARQUBE_HOME}/temp", "${SONARQUBE_HOME}/logs", "${SONARQUBE_HOME}/extensions"]
 
 WORKDIR $SONARQUBE_HOME
 USER sonarqube
 COPY README.txt ${SONARQUBE_HOME}/temp
+COPY com.checkmarx.sonar.cxplugin-8.90.0.jar ${SONARQUBE_HOME}/extensions/plugins
 COPY run.sh $SONARQUBE_HOME/bin/
 ENTRYPOINT ["./bin/run.sh"]
