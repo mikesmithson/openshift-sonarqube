@@ -56,12 +56,19 @@ RUN set -x \
     && rm sonarqube.zip* \
     && rm -rf $SONARQUBE_HOME/bin/*
 
+RUN set -x && mkdir -p "${SONARQUBE_HOME}/extensions/plugins"
+
 
 VOLUME ["$SONARQUBE_HOME}/data", "${SONARQUBE_HOME}/temp", "${SONARQUBE_HOME}/logs", "${SONARQUBE_HOME}/extensions"]
+
+RUN set -x && chown -R sonarqube:sonarqube "${SONARQUBE_HOME}/data"
+RUN set -x && chown -R sonarqube:sonarqube "${SONARQUBE_HOME}/temp"
+RUN set -x && chown -R sonarqube:sonarqube "${SONARQUBE_HOME}/logs"
+RUN set -x && chown -R sonarqube:sonarqube "${SONARQUBE_HOME}/extensions"
 
 WORKDIR $SONARQUBE_HOME
 USER sonarqube
 COPY README.txt ${SONARQUBE_HOME}/temp
-COPY com.checkmarx.sonar.cxplugin-8.90.0.jar ${SONARQUBE_HOME}/extensions/plugins
+COPY --chown=sonarqube:sonarqube com.checkmarx.sonar.cxplugin-8.90.0.jar ${SONARQUBE_HOME}/extensions/plugins
 COPY run.sh $SONARQUBE_HOME/bin/
 ENTRYPOINT ["./bin/run.sh"]
